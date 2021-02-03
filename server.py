@@ -32,10 +32,21 @@ while True:
         
         dati = dati.decode()
         print("Ricevuto: '%s'" % dati)
-        if dati=='0':
+        if dati=='ko':
             print("Chiudo la connessione con " + str(addr_client))
             break
-        dati = "Risposta a : " + str(addr_client) + ". Il valore del contatore è : " + str(contConn)
+       
+        operazione,n1,n2 =dati.split(";")
+        
+        if operazione == "+":
+            ris=float(n1)+float(n2)
+        elif operazione == "-": 
+            ris=float(n1)-float(n2)
+        elif operazione == "*":
+            ris=float(n1)*float(n2)   
+        elif operazione == "/" and n2!=0:
+            ris=float(n1)/float(n2)  
+        dati = "Risposta a : " + str(addr_client) + ". Il risultato è : " + str(ris)
 
         dati = dati.encode()
 
