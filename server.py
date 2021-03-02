@@ -1,5 +1,6 @@
-#!/usr/bin/env python3
+!/usr/bin/env python3
 import socket
+
 
 SERVER_ADDRESS = '127.0.0.1'
 
@@ -18,14 +19,14 @@ def riceviComandi(socket):
             if not dati:
                 print("Fine dati dal client. Reset")
                 break
-
+           
             dati = dati.decode()
-            print("Ricevuto:" % dati)
+            print("Ricevuto: '%s'" % dati)
             if dati == '0':
                 print("Chiudo la connessione con " + str(addr_client))
                 break
 
-            dati = dati.split(";")  # piu;1;4 -> [piu][1][4]
+            dati = dati.split(";")  
             risposta = str()
 
             if dati[0] == "+" or dati[0] == "-" or dati[0] == "*" or dati[0] == "/":
@@ -36,7 +37,7 @@ def riceviComandi(socket):
                     print("ValueError")
                     risposta = "Non hai inserito i numeri correttamente."
 
-                if risposta == "":  # I valori sono buoni
+                if risposta == "": 
                     risultato = int()
 
                     if dati[0] == "+":
@@ -45,10 +46,12 @@ def riceviComandi(socket):
                         risultato = dati[1] - dati[2]
                     elif dati[0] == "*":
                         risultato = dati[1] * dati[2]
-                    elif dati[0] == "/":
+                    else:
                         risultato = dati[1] / dati[2]
 
-                    risposta = "Il risultato dell'operazione " +str(risultato)      
+                    risposta = "Il risultato dell'operazione " + \
+                        str(dati[0]) + " tra " + str(dati[1]) + " e " + \
+                        str(dati[2]) + " è uguale a " + str(risultato) + "."
             else:
                 risposta = "Operazione non valida."
 
@@ -56,12 +59,26 @@ def riceviComandi(socket):
 
             sock_service.send(risposta)
         sock_service.close()
-
-
+        
+def ricevi_connessioni(socket_listen):
+    while True:
+        socket_service, addr_client = sock_listen.accept()
+        print("\nConnessione ricevuta da %s" % str(addr_client))
+        print("Creo un thread per servire le richieste")
+        try:
+            Thread(target=riceviComandi, args=(sock_service, addr_client)).start()
+        except:
+            print("Il thread non si avvia")
+            sock_listen.close()
+            
 def avviaServer(address, port):
+   
     sock_listen = socket.socket()
+
     sock_listen.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
     sock_listen.bind((address, port))
+   
     sock_listen.listen(5)
     print("Server in ascolto su %s." % str((address, port)))
 
