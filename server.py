@@ -1,10 +1,8 @@
-!/usr/bin/env python3
-import socket
-
 
 SERVER_ADDRESS = '127.0.0.1'
 
 SERVER_PORT = 22224
+
 
 
 def riceviComandi(socket):
@@ -19,7 +17,7 @@ def riceviComandi(socket):
             if not dati:
                 print("Fine dati dal client. Reset")
                 break
-           
+         
             dati = dati.decode()
             print("Ricevuto: '%s'" % dati)
             if dati == '0':
@@ -72,13 +70,13 @@ def ricevi_connessioni(socket_listen):
             sock_listen.close()
             
 def avviaServer(address, port):
-   
-    sock_listen = socket.socket()
-
-    sock_listen.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
-    sock_listen.bind((address, port))
+    sock_listen = socket.socket()
    
+    sock_listen.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+   
+    sock_listen.bind((address, port))
+  
     sock_listen.listen(5)
     print("Server in ascolto su %s." % str((address, port)))
 
